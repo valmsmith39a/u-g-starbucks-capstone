@@ -11,12 +11,12 @@ from model import BinaryClassifier
 NP_CONTENT_TYPE = 'application/x-npy'
 
 
-# Provided model load function
+# Model load function
 def model_fn(model_dir):
     """Load the PyTorch model from the `model_dir` directory."""
     print("Loading model.")
 
-    # First, load the parameters used to create the model.
+    # Load the parameters used to create the model
     model_info = {}
     model_info_path = os.path.join(model_dir, 'model_info.pth')
     with open(model_info_path, 'rb') as f:
@@ -40,15 +40,19 @@ def model_fn(model_dir):
     return model
 
 
-# Provided input data loading
+# input data loading
 def input_fn(serialized_input_data, content_type):
     print('Deserializing the input data.')
     if content_type == NP_CONTENT_TYPE:
         stream = BytesIO(serialized_input_data)
+
+#         old = np.load
+#         np.load = lambda *a,**k: old(*a,**k,allow_pickle=True)
+
         return np.load(stream)
     raise Exception('Requested unsupported ContentType in content_type: ' + content_type)
 
-# Provided output data handling
+# output data handling
 def output_fn(prediction_output, accept):
     print('Serializing the generated output.')
     if accept == NP_CONTENT_TYPE:
@@ -58,7 +62,7 @@ def output_fn(prediction_output, accept):
     raise Exception('Requested unsupported ContentType in Accept: ' + accept)
 
 
-# Provided predict function
+# predict function
 def predict_fn(input_data, model):
     print('Predicting class labels for the input data...')
 
